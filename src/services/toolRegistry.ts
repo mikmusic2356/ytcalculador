@@ -652,7 +652,7 @@ ${urlsXml}
   public generateRobotsTxt(baseUrl?: string): string {
     const siteUrl = (baseUrl || getSiteUrl()).replace(/\/+$/, '');
     return `# Robots.txt for YouTubeCalculador
-# https://youtubecalculador.com
+# https://youtubecalculador.online
 
 User-agent: *
 Allow: /
