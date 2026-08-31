@@ -92,19 +92,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, onOpenS
             {/* Dark / Light Mode Toggle */}
             <ThemeToggle />
 
-            {/* Quick Admin Button */}
-            <button
-              id="btn-nav-admin"
-              onClick={() => handleNavClick('/admin')}
-              className={`bg-[#212121] dark:bg-[#272727] hover:bg-black dark:hover:bg-[#333333] text-white text-xs px-3 sm:px-4 py-2 rounded-full font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer border border-transparent dark:border-[#383838] ${
-                currentPath === '/admin' ? 'ring-2 ring-[#FF0000]' : ''
-              }`}
-              title="Panel Administrativo"
-            >
-              <Shield className="w-3.5 h-3.5 text-red-500" />
-              <span className="hidden xl:inline">Admin</span>
-            </button>
-
             {/* Mobile Menu Toggle */}
             <button
               id="btn-mobile-menu-toggle"
@@ -138,16 +125,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, onOpenS
             );
           })}
 
-          <div className="pt-3 border-t border-gray-100 dark:border-[#272727] flex items-center justify-between text-xs px-2">
+          <div className="pt-3 border-t border-gray-100 dark:border-[#272727] flex items-center justify-start text-xs px-2">
             <ThemeToggle showLabel className="py-1.5" />
-
-            <button
-              onClick={() => handleNavClick('/admin')}
-              className="font-semibold text-gray-600 dark:text-gray-300 hover:text-[#FF0000] flex items-center gap-1 cursor-pointer"
-            >
-              <Shield className="w-3.5 h-3.5 text-red-500" />
-              Panel Admin
-            </button>
           </div>
         </div>
       )}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, ShieldCheck, ExternalLink } from 'lucide-react';
+import { Heart, ShieldCheck, ExternalLink, Lock } from 'lucide-react';
 import { CALCULATORS } from '../data/calculators';
 
 interface FooterProps {
@@ -126,8 +126,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <p className="text-center md:text-left text-[11px] leading-relaxed max-w-2xl">
             <strong>Aviso de exención de responsabilidad:</strong> YouTubeCalculador es un recurso web independiente no oficial. YouTube™ y el logotipo de YouTube son marcas comerciales registradas de Google LLC. Este sitio web no está afiliado, respaldado ni administrado por YouTube ni por Google.
           </p>
-          <div className="flex items-center gap-1 text-[11px] shrink-0 text-gray-400">
+          <div className="flex items-center gap-2 text-[11px] shrink-0 text-gray-400">
             <span>© {new Date().getFullYear()} YouTubeCalculador. Todos los derechos reservados.</span>
+            <button
+              onClick={() => onNavigate('/admin')}
+              className="text-gray-600 hover:text-gray-400 dark:text-gray-600 dark:hover:text-gray-300 p-1 rounded transition-colors cursor-pointer opacity-70 hover:opacity-100"
+              title="Acceso administrativo"
+              aria-label="Acceso administrativo"
+            >
+              <Lock className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       </div>
