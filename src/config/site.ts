@@ -3,11 +3,11 @@
  * Handles environment-aware URL resolution for canonicals, Open Graph, sitemaps, and robots.txt.
  * 
  * In development: Uses http://localhost:3000 or current browser origin.
- * In production: Uses https://youtubecalculador.com.
+ * In production: Uses https://youtubecalculador.online.
  * No components should hardcode domain strings.
  */
 
-export const DEFAULT_PRODUCTION_URL = 'https://youtubecalculador.com';
+export const DEFAULT_PRODUCTION_URL = 'https://youtubecalculador.online';
 
 /**
  * Resolves the active base URL of the site depending on runtime environment.
