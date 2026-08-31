@@ -622,9 +622,11 @@ class ToolRegistryService {
 
     const urlsXml = indexableItems
       .map((item) => {
-        const loc = item.canonicalUrl.startsWith('http')
-          ? item.canonicalUrl
-          : `${siteUrl}${item.route}`;
+        const loc = baseUrl
+          ? `${siteUrl}${item.route}`
+          : item.canonicalUrl.startsWith('http')
+            ? item.canonicalUrl
+            : `${siteUrl}${item.route}`;
         const lastmod = item.lastModified || new Date().toISOString().split('T')[0];
         const changefreq = item.changefreq || 'weekly';
         const priority = item.priority.toFixed(1);
