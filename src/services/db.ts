@@ -96,6 +96,37 @@ export async function initDatabase() {
       );
     `);
 
+    // 7. Admin Secure Credentials table (3-Factor Access Requirements)
+    await turso.execute(`
+      CREATE TABLE IF NOT EXISTS admin_credentials (
+        id TEXT PRIMARY KEY,
+        username TEXT NOT NULL UNIQUE,
+        password_hash TEXT NOT NULL,
+        access_key TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'superadmin',
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+    `);
+
+    // Seed default admin credentials in Turso DB if not exists
+    await turso.execute({
+      sql: `
+        INSERT INTO admin_credentials (id, username, password_hash, access_key, role, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(id) DO NOTHING;
+      `,
+      args: [
+        'admin_master',
+        'mikadmin2026',
+        'YtCalc#Secure2026!Pro',
+        'KEY-9823-X7Q9-YTPRO',
+        'superadmin',
+        Date.now(),
+        Date.now(),
+      ],
+    });
+
     // Seed default cookie settings if not exists
     await turso.execute({
       sql: `

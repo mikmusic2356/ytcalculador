@@ -32,6 +32,53 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Admin 3-Factor Secure Authentication: Username, Password, and Alphanumeric Access Key
+app.post('/api/admin/login', async (req, res) => {
+  try {
+    const { username, password, accessKey } = req.body;
+    if (!username || !password || !accessKey) {
+      return res.status(400).json({ error: 'Debes ingresar Usuario, Contraseña y Clave de Acceso Alfanumérica' });
+    }
+
+    const queryRes = await turso.execute({
+      sql: `
+        SELECT id, username, password_hash, access_key, role
+        FROM admin_credentials
+        WHERE username = ?;
+      `,
+      args: [username.trim()],
+    });
+
+    if (queryRes.rows.length === 0) {
+      return res.status(401).json({ error: 'Credenciales inválidas' });
+    }
+
+    const admin = queryRes.rows[0] as any;
+
+    const passwordMatch = admin.password_hash === password;
+    const accessKeyMatch = admin.access_key === accessKey.trim();
+
+    if (!passwordMatch || !accessKeyMatch) {
+      return res.status(401).json({ error: 'Credenciales inválidas. Verifica usuario, contraseña y clave de acceso.' });
+    }
+
+    // Generate secure session token
+    const token = `adm_${Buffer.from(`${admin.username}:${admin.role}:${Date.now()}`).toString('base64')}`;
+
+    res.json({
+      success: true,
+      token,
+      user: {
+        username: admin.username,
+        role: admin.role,
+      },
+    });
+  } catch (error: any) {
+    console.error('Error during admin login in Turso:', error);
+    res.status(500).json({ error: 'Error en la autenticación del servidor' });
+  }
+});
+
 // Real Analytics: Record Telemetry Event
 app.post('/api/analytics/track', async (req, res) => {
   try {

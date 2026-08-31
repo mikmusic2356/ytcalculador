@@ -37,14 +37,19 @@ import { AggregatedStats, MetricEvent } from '../types';
 import { CALCULATORS } from '../data/calculators';
 import { ToolRegistry, RegisteredTool } from '../services/toolRegistry';
 
-const ADMIN_PIN = 'admin2026';
-
 export const AdminDashboard: React.FC<{ onExit: () => void }> = ({ onExit }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return sessionStorage.getItem('ytcalc_admin_auth') === 'true';
   });
-  const [pinInput, setPinInput] = useState('');
-  const [pinError, setPinError] = useState(false);
+
+  // 3-Factor Authentication Form State
+  const [loginForm, setLoginForm] = useState({
+    username: '',
+    password: '',
+    accessKey: '',
+  });
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [stats, setStats] = useState<AggregatedStats>(metricsService.getStats());
   const [events, setEvents] = useState<MetricEvent[]>(metricsService.getRecentEvents());
@@ -209,20 +214,41 @@ export const AdminDashboard: React.FC<{ onExit: () => void }> = ({ onExit }) => 
     return () => clearInterval(interval);
   }, [imgToolFilter, imgPeriodFilter]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (pinInput === ADMIN_PIN || pinInput === 'admin' || pinInput === '1234') {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('ytcalc_admin_auth', 'true');
-      setPinError(false);
-    } else {
-      setPinError(true);
+    setLoginError(null);
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: loginForm.username,
+          password: loginForm.password,
+          accessKey: loginForm.accessKey,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setIsAuthenticated(true);
+        sessionStorage.setItem('ytcalc_admin_auth', 'true');
+        sessionStorage.setItem('ytcalc_admin_token', data.token);
+      } else {
+        setLoginError(data.error || 'Credenciales incorrectas. Acceso denegado.');
+      }
+    } catch {
+      setLoginError('Error al conectar con el servidor de autenticación.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     sessionStorage.removeItem('ytcalc_admin_auth');
+    sessionStorage.removeItem('ytcalc_admin_token');
   };
 
   const handleResetData = () => {
@@ -245,57 +271,92 @@ export const AdminDashboard: React.FC<{ onExit: () => void }> = ({ onExit }) => 
 
   if (!isAuthenticated) {
     return (
-      <div id="admin-login-screen" className="min-h-[70vh] flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md bg-white dark:bg-[#1F1F1F] rounded-2xl border border-zinc-200 dark:border-[#2F2F2F] p-8 shadow-xl text-center space-y-6">
-          <div className="w-14 h-14 bg-zinc-900 dark:bg-black text-white rounded-2xl flex items-center justify-center mx-auto shadow-md">
-            <Lock className="w-6 h-6 text-[#FF0000]" />
-          </div>
-
-          <div>
-            <h1 className="text-xl font-bold text-zinc-900 dark:text-white">Panel de Administración Privado</h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-              Acceso restringido para métricas, telemetría y configuración del sistema.
+      <div id="admin-login-screen" className="min-h-[75vh] flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md bg-white dark:bg-[#1F1F1F] rounded-3xl border border-zinc-200 dark:border-[#2F2F2F] p-8 shadow-2xl space-y-6">
+          <div className="text-center space-y-2">
+            <div className="w-14 h-14 bg-zinc-900 dark:bg-black text-white rounded-2xl flex items-center justify-center mx-auto shadow-md border border-zinc-700">
+              <ShieldAlert className="w-7 h-7 text-[#FF0000]" />
+            </div>
+            <h1 className="text-xl font-black text-zinc-900 dark:text-white tracking-tight">
+              Portal Administrativo Seguro
+            </h1>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-xs mx-auto">
+              Requiere 3 factores de verificación: Usuario, Contraseña y Clave de Acceso Alfanumérica.
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-1 text-left">
-              <label className="text-xs font-bold text-[#212121] dark:text-zinc-200">Contraseña de Administrador</label>
+          <form onSubmit={handleLogin} className="space-y-4 text-left">
+            {loginError && (
+              <div className="p-3 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900/50 rounded-xl text-xs font-semibold text-red-600 dark:text-red-400">
+                {loginError}
+              </div>
+            )}
+
+            {/* 1. Usuario */}
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                1. Usuario Administrador
+              </label>
               <input
-                id="admin-pin-input"
-                type="password"
-                value={pinInput}
-                onChange={(e) => {
-                  setPinInput(e.target.value);
-                  setPinError(false);
-                }}
-                placeholder="Ingresa PIN (demo: admin2026)"
-                className="w-full px-4 py-2.5 bg-gray-100 dark:bg-[#141414] border border-transparent dark:border-[#383838] rounded-xl text-sm font-semibold text-[#212121] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#FF0000] outline-none transition-all"
+                type="text"
+                required
+                value={loginForm.username}
+                onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
+                placeholder="Nombre de usuario"
+                className="w-full px-3.5 py-2.5 bg-zinc-50 dark:bg-[#141414] border border-zinc-300 dark:border-[#383838] rounded-xl text-xs font-medium text-zinc-900 dark:text-white outline-none focus:ring-2 focus:ring-[#FF0000]"
                 autoFocus
               />
-              {pinError && (
-                <p className="text-[11px] text-[#FF0000] font-semibold">
-                  Contraseña incorrecta. Prueba con <code className="bg-red-50 dark:bg-red-950 px-1 py-0.5 rounded">admin2026</code>.
-                </p>
-              )}
+            </div>
+
+            {/* 2. Contraseña */}
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                2. Contraseña Maestra
+              </label>
+              <input
+                type="password"
+                required
+                value={loginForm.password}
+                onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                placeholder="••••••••••••"
+                className="w-full px-3.5 py-2.5 bg-zinc-50 dark:bg-[#141414] border border-zinc-300 dark:border-[#383838] rounded-xl text-xs font-medium text-zinc-900 dark:text-white outline-none focus:ring-2 focus:ring-[#FF0000]"
+              />
+            </div>
+
+            {/* 3. Clave Alfanumérica */}
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center justify-between">
+                <span>3. Clave de Acceso Alfanumérica</span>
+                <span className="text-[10px] text-zinc-400 font-mono">Token 3FA</span>
+              </label>
+              <input
+                type="text"
+                required
+                value={loginForm.accessKey}
+                onChange={(e) => setLoginForm({ ...loginForm, accessKey: e.target.value })}
+                placeholder="KEY-XXXX-XXXX-XXXX"
+                className="w-full px-3.5 py-2.5 bg-zinc-50 dark:bg-[#141414] border border-zinc-300 dark:border-[#383838] rounded-xl text-xs font-mono font-bold text-zinc-900 dark:text-white outline-none focus:ring-2 focus:ring-[#FF0000] tracking-wider"
+              />
             </div>
 
             <button
-              id="btn-admin-submit-login"
               type="submit"
-              className="w-full py-2.5 bg-[#FF0000] hover:bg-[#E60000] text-white font-bold text-sm rounded-full transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+              disabled={isSubmitting}
+              className="w-full py-3 bg-[#FF0000] hover:bg-[#CC0000] active:scale-98 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               <Unlock className="w-4 h-4" />
-              Desbloquear Dashboard
+              {isSubmitting ? 'Verificando con Turso...' : 'Verificar y Desbloquear'}
             </button>
           </form>
 
-          <button
-            onClick={onExit}
-            className="text-xs text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors font-medium cursor-pointer"
-          >
-            ← Volver a YouTubeCalculador
-          </button>
+          <div className="text-center pt-2 border-t border-zinc-100 dark:border-[#2F2F2F]">
+            <button
+              onClick={onExit}
+              className="text-xs text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors font-medium cursor-pointer"
+            >
+              ← Volver a YouTubeCalculador
+            </button>
+          </div>
         </div>
       </div>
     );
