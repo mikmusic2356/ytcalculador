@@ -1,0 +1,6 @@
+{
+  "name": "YouTubeCalculador",
+  "description": "Plataforma gratuita con calculadoras y herramientas para creadores de YouTube: Ganancias, RPM, CTR, Shorts, Asistente de Imágenes y Suite de SEO para YouTube.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

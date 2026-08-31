@@ -1,0 +1,329 @@
+import React, { useState, useEffect } from 'react';
+import { ThemeProvider } from './context/ThemeContext';
+import { Navbar } from './components/Navbar';
+import { Footer } from './components/Footer';
+import { SearchModal } from './components/SearchModal';
+import { CookieBanner } from './components/CookieBanner';
+import { SEOHead } from './components/SEOHead';
+import { HomePage } from './pages/HomePage';
+import { CalculatorsDirectory } from './pages/CalculatorsDirectory';
+import { GuidesPage } from './pages/GuidesPage';
+import { LegalPage } from './pages/LegalPages';
+import { ImagesPage } from './pages/ImagesPage';
+import { SeoPage } from './pages/SeoPage';
+import { CalculatorEngine } from './components/CalculatorEngine';
+import { AdminDashboard } from './components/AdminDashboard';
+import { CALCULATORS } from './data/calculators';
+import { IMAGE_TOOLS } from './data/imageToolsData';
+import { SEO_TOOLS } from './data/seoToolsData';
+import { GUIDES } from './data/guides';
+
+import { NotFoundPage } from './pages/NotFoundPage';
+import { ToolRegistry } from './services/toolRegistry';
+
+function AppContent() {
+  const [currentPath, setCurrentPath] = useState<string>(() => {
+    return window.location.pathname || '/';
+  });
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // Automatic 301 redirection handling
+  useEffect(() => {
+    const cleanPath = currentPath.split('?')[0].replace(/\/+$/, '') || '/';
+    const redirectTarget = ToolRegistry.getRedirectForRoute(cleanPath);
+    if (redirectTarget && redirectTarget !== cleanPath) {
+      window.history.replaceState({}, '', redirectTarget);
+      setCurrentPath(redirectTarget);
+    }
+  }, [currentPath]);
+
+  // Sync with browser back/forward history and database
+  useEffect(() => {
+    ToolRegistry.syncFromDatabase();
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname || '/');
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Global Keyboard Shortcut: Cmd+K / Ctrl+K
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Navigation helper that updates history without page refresh
+  const navigate = (path: string) => {
+    let cleanPath = path;
+    if (!cleanPath.startsWith('/')) {
+      cleanPath = `/${cleanPath}`;
+    }
+
+    // Check for 301 redirection
+    const redirectTarget = ToolRegistry.getRedirectForRoute(cleanPath);
+    const finalPath = redirectTarget || cleanPath;
+
+    window.history.pushState({}, '', finalPath);
+    setCurrentPath(finalPath);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectTool = (slug: string) => {
+    if (slug === 'todas') {
+      navigate('/calculadoras');
+    } else {
+      navigate(`/${slug}`);
+    }
+  };
+
+  // Resolve current active calculator if on a tool slug route
+  const cleanCurrentPath = currentPath.split('?')[0].replace(/\/+$/, '') || '/';
+  const pathSegments = currentPath.replace(/^\//, '').split('/').filter(Boolean);
+  const lastSegment = pathSegments[pathSegments.length - 1] || '';
+  const firstSegment = pathSegments[0] || '';
+
+  // 1. First check directly in ToolRegistry
+  const registeredTool = ToolRegistry.getByRoute(cleanCurrentPath);
+
+  // Alias mapping for SEO friendly alternative URLs
+  const SLUG_ALIASES: Record<string, string> = {
+    'calculadora-vistas-para-ganar-100': 'vistas-para-ganar-100-dolares',
+    'calculadora-vistas-para-ganar-500': 'vistas-para-ganar-500-dolares',
+    'calculadora-vistas-para-ganar-1000': 'vistas-para-ganar-1000-dolares',
+    'comparador-rpm-paises': 'comparador-rpm-pais',
+    'calculadora-vistas-shorts': 'calculadora-vistas-shorts-ingresos',
+    'calculadora-ingresos-mensuales-youtube': 'calculadora-ingresos-mensuales',
+    'calculadora-ingresos-anuales-youtube': 'calculadora-ingresos-anuales',
+    'calculadora-ctr': 'calculadora-ctr-youtube',
+    'calculadora-retencion': 'calculadora-retencion-youtube',
+    'calculadora-watch-time': 'calculadora-watch-time-youtube',
+    'calculadora-horas-reproduccion': 'calculadora-watch-time-youtube',
+    'calculadora-duracion-media-youtube': 'calculadora-duracion-media-visualizacion',
+    'calculadora-suscriptores-youtube': 'calculadora-conversion-suscriptores',
+    'calculadora-crecimiento-youtube': 'calculadora-crecimiento-porcentual',
+    'proyeccion-canal-youtube': 'proyeccion-crecimiento-canal',
+    'comparador-videos': 'comparador-videos-youtube',
+    'comparador-periodos': 'comparador-periodos-youtube',
+    'comparador-metricas': 'comparador-metricas-youtube',
+    'comparador-rendimiento': 'comparador-rendimiento-youtube',
+    // Video and Production aliases
+    'calculadora-bitrate-youtube': 'calculadora-bitrate',
+    'calculadora-tamano-archivo-video': 'calculadora-tamano-video',
+    'calculadora-duracion': 'calculadora-duracion-video',
+    'calculadora-fps': 'calculadora-fps-video',
+    'calculadora-frames': 'calculadora-frames-video',
+    'calculadora-compresion': 'calculadora-compresion-video',
+    'calculadora-relacion-aspecto-video': 'calculadora-relacion-aspecto',
+    'calculadora-aspecto-16-9': 'calculadora-16-9',
+    'calculadora-shorts-9-16': 'calculadora-9-16',
+    'calculadora-aspecto-4-3': 'calculadora-4-3',
+    'calculadora-escalado': 'calculadora-escalado-video',
+    'calculadora-dimensiones': 'calculadora-dimensiones-video',
+    'calculadora-espacio-video': 'calculadora-espacio-necesario',
+    'calculadora-horas-grabacion': 'calculadora-tiempo-grabacion',
+    'calculadora-almacenamiento-grabacion': 'calculadora-almacenamiento-video',
+    'calculadora-duracion-segun-frames': 'calculadora-duracion-frames',
+    'conversor-tiempo-edicion': 'conversor-timecode',
+  };
+
+  const resolvedSlug =
+    SLUG_ALIASES[lastSegment] ||
+    SLUG_ALIASES[firstSegment] ||
+    lastSegment ||
+    firstSegment;
+
+  const activeTool =
+    CALCULATORS.find((c) => c.slug === resolvedSlug) ||
+    CALCULATORS.find((c) => c.slug === firstSegment);
+
+  // Resolve current image tool if on an image tool slug
+  const activeImageTool =
+    IMAGE_TOOLS.find((t) => t.slug === resolvedSlug) ||
+    IMAGE_TOOLS.find((t) => t.slug === lastSegment) ||
+    (firstSegment === 'imagenes' && IMAGE_TOOLS.find((t) => t.slug === lastSegment));
+
+  // Resolve current SEO tool if on an SEO tool slug
+  const activeSeoTool =
+    SEO_TOOLS.find((t) => t.slug === resolvedSlug) ||
+    SEO_TOOLS.find((t) => t.slug === lastSegment) ||
+    (firstSegment === 'seo' && SEO_TOOLS.find((t) => t.slug === lastSegment));
+
+  // Resolve current guide if on a guide slug
+  const activeGuide = GUIDES.find((g) => g.slug === resolvedSlug || g.slug === firstSegment);
+
+  // Static/hub routes known
+  const isKnownRoute =
+    cleanCurrentPath === '/' ||
+    cleanCurrentPath === '/calculadoras' ||
+    cleanCurrentPath === '/categorias' ||
+    cleanCurrentPath === '/imagenes' ||
+    cleanCurrentPath === '/seo' ||
+    cleanCurrentPath === '/guias' ||
+    cleanCurrentPath === '/admin' ||
+    cleanCurrentPath === '/politica-privacidad' ||
+    cleanCurrentPath === '/politica-cookies' ||
+    cleanCurrentPath === '/terminos' ||
+    cleanCurrentPath === '/sobre-nosotros' ||
+    cleanCurrentPath === '/contacto' ||
+    Boolean(registeredTool) ||
+    Boolean(activeTool) ||
+    Boolean(activeImageTool) ||
+    Boolean(activeSeoTool) ||
+    Boolean(activeGuide);
+
+  return (
+    <div className="min-h-screen flex flex-col bg-[#F9F9F9] dark:bg-[#0F0F0F] text-[#212121] dark:text-[#F1F1F1] font-sans antialiased selection:bg-[#FF0000] selection:text-white transition-colors duration-200">
+      {/* Top Navigation */}
+      <Navbar
+        currentPath={currentPath}
+        onNavigate={navigate}
+        onOpenSearch={() => setIsSearchOpen(true)}
+      />
+
+      {/* Global Quick Search Modal */}
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSelectTool={handleSelectTool}
+      />
+
+      {/* Main Dynamic View Routing */}
+      <main className="flex-1">
+        {/* 1. Admin Dashboard */}
+        {currentPath === '/admin' ? (
+          <>
+            <SEOHead
+              title="Panel Administrativo"
+              description="Dashboard de métricas, telemetría y configuración del sistema YouTubeCalculador."
+            />
+            <AdminDashboard onExit={() => navigate('/')} />
+          </>
+        ) : !isKnownRoute ? (
+          /* 2. Custom 404 Page */
+          <NotFoundPage onNavigate={navigate} onOpenSearch={() => setIsSearchOpen(true)} />
+        ) : activeTool ? (
+          /* 3. Dynamic Calculator View */
+          <>
+            <SEOHead
+              title={activeTool.seo.title}
+              description={activeTool.seo.metaDescription}
+              route={`/${activeTool.slug}`}
+              faqs={activeTool.seo.faqs}
+              howToSteps={activeTool.seo.howToSteps}
+              toolName={activeTool.name}
+            />
+            <CalculatorEngine tool={activeTool} onNavigateTool={handleSelectTool} />
+          </>
+        ) : currentPath.startsWith('/imagenes') || activeImageTool ? (
+          /* 4. Image Assistant Suite (100% Local) */
+          <ImagesPage
+            currentPath={activeImageTool ? `/imagenes/${activeImageTool.slug}` : currentPath}
+            onNavigate={navigate}
+          />
+        ) : currentPath.startsWith('/seo') || activeSeoTool ? (
+          /* 5. YouTube SEO Suite (23 Local Text & Metadata Tools) */
+          <SeoPage
+            currentPath={activeSeoTool ? `/seo/${activeSeoTool.slug}` : currentPath}
+            onNavigate={navigate}
+          />
+        ) : currentPath === '/calculadoras' || currentPath === '/categorias' ? (
+          /* 6. Full Calculators Directory */
+          <>
+            <SEOHead
+              title="Todas las Calculadoras para YouTube (100% Gratuitas)"
+              description="Directorio con todas las herramientas de cálculo de ingresos, RPM, CPM, CTR, horas de reproducción y optimización técnica para creadores de YouTube."
+            />
+            <CalculatorsDirectory onNavigateTool={handleSelectTool} />
+          </>
+        ) : currentPath === '/guias' || activeGuide ? (
+          /* 7. Creator Strategy Guides */
+          <>
+            <SEOHead
+              title={activeGuide ? activeGuide.title : 'Guías y Estrategias para Creadores de YouTube'}
+              description={
+                activeGuide
+                  ? activeGuide.summary
+                  : 'Aprende a escalar tu canal de YouTube, aumentar tu RPM y diseñar miniaturas de alto impacto.'
+              }
+            />
+            <GuidesPage onNavigateTool={handleSelectTool} initialGuideSlug={activeGuide?.slug || null} />
+          </>
+        ) : currentPath === '/politica-privacidad' ? (
+          <>
+            <SEOHead
+              title="Política de Privacidad"
+              description="Política de privacidad y protección de datos anónima de YouTubeCalculador."
+            />
+            <LegalPage type="privacidad" />
+          </>
+        ) : currentPath === '/politica-cookies' ? (
+          <>
+            <SEOHead
+              title="Política de Cookies"
+              description="Información detallada sobre las cookies técnicas, de analítica y de Google AdSense utilizadas en YouTubeCalculador."
+            />
+            <LegalPage type="cookies" />
+          </>
+        ) : currentPath === '/terminos' ? (
+          <>
+            <SEOHead
+              title="Términos y Condiciones"
+              description="Términos de servicio y condiciones de uso de las calculadoras para YouTube."
+            />
+            <LegalPage type="terminos" />
+          </>
+        ) : currentPath === '/sobre-nosotros' ? (
+          <>
+            <SEOHead
+              title="Sobre Nosotros"
+              description="Conoce la misión de YouTubeCalculador: democratizar las herramientas analíticas para todos los creadores de YouTube."
+            />
+            <LegalPage type="sobre-nosotros" />
+          </>
+        ) : currentPath === '/contacto' ? (
+          <>
+            <SEOHead
+              title="Contacto y Sugerencias"
+              description="Envía tus preguntas o sugiere nuevas calculadoras para el equipo de YouTubeCalculador."
+            />
+            <LegalPage type="contacto" />
+          </>
+        ) : currentPath === '/' ? (
+          /* 8. Homepage */
+          <>
+            <SEOHead
+              title="Calculadoras y Herramientas Gratuitas para YouTube"
+              description="Calcula tus ingresos, RPM, CPM, CTR, horas de reproducción y optimiza tu canal de YouTube gratis y sin registro."
+            />
+            <HomePage onNavigateTool={handleSelectTool} onOpenSearch={() => setIsSearchOpen(true)} />
+          </>
+        ) : (
+          /* Fallback 404 */
+          <NotFoundPage onNavigate={navigate} onOpenSearch={() => setIsSearchOpen(true)} />
+        )}
+      </main>
+
+      {/* Persistent Footer */}
+      <Footer onNavigate={navigate} />
+
+      {/* Privacy & Cookie Consent Banner */}
+      <CookieBanner />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+}
+
