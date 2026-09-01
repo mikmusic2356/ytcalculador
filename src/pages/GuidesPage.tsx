@@ -8,10 +8,15 @@ import { AdPlacement } from '../components/AdPlacement';
 
 interface GuidesPageProps {
   onNavigateTool: (slug: string) => void;
+  onNavigateGuide?: (path: string) => void;
   initialGuideSlug?: string | null;
 }
 
-export const GuidesPage: React.FC<GuidesPageProps> = ({ onNavigateTool, initialGuideSlug }) => {
+export const GuidesPage: React.FC<GuidesPageProps> = ({
+  onNavigateTool,
+  onNavigateGuide,
+  initialGuideSlug,
+}) => {
   const [selectedGuide, setSelectedGuide] = useState<GuideArticle | null>(() => {
     if (initialGuideSlug) {
       return GUIDES.find((g) => g.slug === initialGuideSlug) || null;
@@ -19,13 +24,37 @@ export const GuidesPage: React.FC<GuidesPageProps> = ({ onNavigateTool, initialG
     return null;
   });
 
+  // Sync state if initialGuideSlug changes via back/forward or route
+  React.useEffect(() => {
+    if (initialGuideSlug) {
+      const g = GUIDES.find((item) => item.slug === initialGuideSlug);
+      if (g) setSelectedGuide(g);
+    } else {
+      setSelectedGuide(null);
+    }
+  }, [initialGuideSlug]);
+
+  const handleSelectGuide = (guide: GuideArticle) => {
+    setSelectedGuide(guide);
+    if (onNavigateGuide) {
+      onNavigateGuide(`/guias/${guide.slug}`);
+    }
+  };
+
+  const handleBackToGuides = () => {
+    setSelectedGuide(null);
+    if (onNavigateGuide) {
+      onNavigateGuide('/guias');
+    }
+  };
+
   if (selectedGuide) {
     const relatedTools = CALCULATORS.filter((c) => selectedGuide.relatedToolSlugs.includes(c.slug));
 
     return (
       <div id="guide-article-view" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <button
-          onClick={() => setSelectedGuide(null)}
+          onClick={handleBackToGuides}
           className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-[#FF0000] dark:hover:text-[#FF4E45] transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -99,7 +128,7 @@ export const GuidesPage: React.FC<GuidesPageProps> = ({ onNavigateTool, initialG
         {GUIDES.map((guide) => (
           <div
             key={guide.id}
-            onClick={() => setSelectedGuide(guide)}
+            onClick={() => handleSelectGuide(guide)}
             className="p-5 bg-white dark:bg-[#1F1F1F] rounded-xl border border-gray-200 dark:border-[#2F2F2F] hover:border-red-300 dark:hover:border-red-800 hover:shadow-sm transition-all cursor-pointer flex flex-col justify-between"
           >
             <div className="space-y-3">
@@ -127,7 +156,7 @@ export const GuidesPage: React.FC<GuidesPageProps> = ({ onNavigateTool, initialG
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setSelectedGuide(guide);
+                  handleSelectGuide(guide);
                 }}
                 className="text-xs font-bold text-[#FF0000] dark:text-[#FF4E45] hover:underline flex items-center gap-1 cursor-pointer"
               >

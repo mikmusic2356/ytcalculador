@@ -266,18 +266,23 @@ function AppContent() {
               />
               <CalculatorsDirectory onNavigateTool={handleSelectTool} />
             </>
-          ) : currentPath === '/guias' || activeGuide ? (
+          ) : currentPath === '/guias' || activeGuide || currentPath.startsWith('/guias/') ? (
             /* 7. Creator Strategy Guides */
             <>
               <SEOHead
-                title={activeGuide ? activeGuide.title : 'Guías y Estrategias para Creadores de YouTube'}
+                title={activeGuide ? `${activeGuide.title} - Guía para Creadores` : 'Guías y Estrategias para Creadores de YouTube'}
                 description={
                   activeGuide
                     ? activeGuide.summary
                     : 'Aprende a escalar tu canal de YouTube, aumentar tu RPM y diseñar miniaturas de alto impacto.'
                 }
+                route={activeGuide ? `/guias/${activeGuide.slug}` : '/guias'}
               />
-              <GuidesPage onNavigateTool={handleSelectTool} initialGuideSlug={activeGuide?.slug || null} />
+              <GuidesPage
+                onNavigateTool={handleSelectTool}
+                onNavigateGuide={navigate}
+                initialGuideSlug={activeGuide?.slug || null}
+              />
             </>
           ) : currentPath === '/politica-privacidad' ? (
             <>
