@@ -173,8 +173,8 @@ export const VIDEO_RESOLUTION_CALCULATORS: CalculatorConfig[] = [
       };
     },
     seo: {
-      title: 'Calculadora 16:9 | Calcular Ancho y Alto en Proporción Panorámica',
-      metaDescription: 'Calcula dimensiones en formato 16:9 para video, miniaturas y pantallas. Introduce el ancho o alto y obtén la resolución exacta.',
+      title: 'Calculadora de Dimensiones 16:9 - Calcular Ancho y Alto en Proporción Panorámica',
+      metaDescription: 'Calcula dimensiones en formato 16:9 para video, miniaturas y pantallas de YouTube. Introduce el ancho o alto y obtén la resolución exacta.',
       h1: 'Calculadora de Dimensiones 16:9',
       keywords: ['calculadora 16 9', 'calcular resolucion 16 9', 'ancho y alto 16 9', 'resoluciones 16 9 youtube'],
       summary: 'Calculadora especializada para formato panorámico 16:9 de YouTube, televisión y monitores.',
@@ -262,7 +262,7 @@ export const VIDEO_RESOLUTION_CALCULATORS: CalculatorConfig[] = [
       };
     },
     seo: {
-      title: 'Calculadora 9:16 | Resoluciones Verticales para YouTube Shorts y TikTok',
+      title: 'Calculadora de Dimensiones 9:16 - Resoluciones Verticales para YouTube Shorts y TikTok',
       metaDescription: 'Calcula dimensiones en formato vertical 9:16 para YouTube Shorts, Instagram Reels y TikTok con medidas exactas en píxeles.',
       h1: 'Calculadora de Dimensiones 9:16 (Vertical)',
       keywords: ['calculadora 9 16', 'resolucion youtube shorts', 'medidas video vertical', '1080x1920 shorts'],
@@ -350,7 +350,7 @@ export const VIDEO_RESOLUTION_CALCULATORS: CalculatorConfig[] = [
       };
     },
     seo: {
-      title: 'Calculadora 4:3 | Dimensiones en Proporción Clásica y TV Antigua',
+      title: 'Calculadora de Dimensiones 4:3 - Proporción Clásica y TV Antigua',
       metaDescription: 'Calcula resoluciones y dimensiones en relación de aspecto 4:3 para videos retro, tabletas y adaptaciones audiovisuales.',
       h1: 'Calculadora de Dimensiones 4:3',
       keywords: ['calculadora 4 3', 'proporcion 4 3 resolucion', 'calcular ancho alto 4 3', 'medidas 4 3 pixeles'],
