@@ -36,12 +36,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* Col 2: Popular Calculators */}
           <div className="space-y-2.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-white">Calculadoras Populares</h4>
-            <ul className="space-y-1.5 text-xs">
+            <ul className="space-y-1 text-xs">
               {CALCULATORS.slice(0, 5).map((tool) => (
                 <li key={tool.id}>
                   <button
                     onClick={() => onNavigate(`/${tool.slug}`)}
-                    className="hover:text-white transition-colors text-left cursor-pointer"
+                    className="hover:text-white transition-colors text-left cursor-pointer py-1 block w-full text-gray-400 hover:text-white"
                   >
                     {tool.name}
                   </button>
@@ -53,11 +53,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* Col 3: Video & SEO Tools */}
           <div className="space-y-2.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-white">Herramientas & SEO</h4>
-            <ul className="space-y-1.5 text-xs">
+            <ul className="space-y-1 text-xs">
               <li>
                 <button
                   onClick={() => onNavigate('/seo')}
-                  className="text-red-400 hover:text-red-300 font-bold transition-colors text-left cursor-pointer flex items-center gap-1"
+                  className="text-red-400 hover:text-red-300 font-bold transition-colors text-left cursor-pointer flex items-center gap-1 py-1 block w-full"
                 >
                   <span>SEO para YouTube (23)</span>
                 </button>
@@ -65,7 +65,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   onClick={() => onNavigate('/imagenes')}
-                  className="text-gray-300 hover:text-white transition-colors text-left cursor-pointer flex items-center gap-1"
+                  className="text-gray-300 hover:text-white transition-colors text-left cursor-pointer flex items-center gap-1 py-1 block w-full"
                 >
                   <span>Asistente de Imágenes (17)</span>
                 </button>
@@ -74,14 +74,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <li key={tool.id}>
                   <button
                     onClick={() => onNavigate(`/${tool.slug}`)}
-                    className="hover:text-white transition-colors text-left cursor-pointer"
+                    className="hover:text-white transition-colors text-left cursor-pointer py-1 block w-full text-gray-400"
                   >
                     {tool.name}
                   </button>
                 </li>
               ))}
               <li>
-                <button onClick={() => onNavigate('/guias')} className="text-gray-400 hover:text-white font-medium cursor-pointer">
+                <button onClick={() => onNavigate('/guias')} className="text-gray-400 hover:text-white font-medium cursor-pointer py-1 block w-full text-left">
                   Guías para Creadores →
                 </button>
               </li>
@@ -91,29 +91,29 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* Col 4: Company & Legal */}
           <div className="space-y-2.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-white">Legal & Privacidad</h4>
-            <ul className="space-y-1.5 text-xs">
+            <ul className="space-y-1 text-xs">
               <li>
-                <button onClick={() => onNavigate('/politica-privacidad')} className="hover:text-white transition-colors cursor-pointer">
+                <button onClick={() => onNavigate('/politica-privacidad')} className="hover:text-white transition-colors cursor-pointer py-1 block w-full text-left text-gray-400">
                   Política de Privacidad
                 </button>
               </li>
               <li>
-                <button onClick={() => onNavigate('/politica-cookies')} className="hover:text-white transition-colors cursor-pointer">
+                <button onClick={() => onNavigate('/politica-cookies')} className="hover:text-white transition-colors cursor-pointer py-1 block w-full text-left text-gray-400">
                   Política de Cookies
                 </button>
               </li>
               <li>
-                <button onClick={() => onNavigate('/terminos')} className="hover:text-white transition-colors cursor-pointer">
+                <button onClick={() => onNavigate('/terminos')} className="hover:text-white transition-colors cursor-pointer py-1 block w-full text-left text-gray-400">
                   Términos y Condiciones
                 </button>
               </li>
               <li>
-                <button onClick={() => onNavigate('/sobre-nosotros')} className="hover:text-white transition-colors cursor-pointer">
+                <button onClick={() => onNavigate('/sobre-nosotros')} className="hover:text-white transition-colors cursor-pointer py-1 block w-full text-left text-gray-400">
                   Sobre Nosotros
                 </button>
               </li>
               <li>
-                <button onClick={() => onNavigate('/contacto')} className="hover:text-white transition-colors cursor-pointer">
+                <button onClick={() => onNavigate('/contacto')} className="hover:text-white transition-colors cursor-pointer py-1 block w-full text-left text-gray-400">
                   Contacto y Sugerencias
                 </button>
               </li>

@@ -188,22 +188,26 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateTool, onOpenSearch
                 {/* Inputs */}
                 <div className="space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-gray-600 dark:text-gray-300 uppercase">Visualizaciones Totales</label>
+                    <label htmlFor="mini-views-input" className="text-xs font-bold text-gray-700 dark:text-gray-200 uppercase">Visualizaciones Totales</label>
                     <input
+                      id="mini-views-input"
+                      aria-label="Visualizaciones Totales"
                       type="number"
                       value={miniViews}
                       onChange={(e) => setMiniViews(Math.max(1, Number(e.target.value) || 0))}
-                      className="w-full border border-gray-200 dark:border-[#383838] bg-white dark:bg-[#141414] rounded-lg px-3 py-2 text-sm focus:border-[#FF0000] focus:ring-1 focus:ring-[#FF0000] outline-none font-semibold text-[#212121] dark:text-white"
+                      className="w-full border border-gray-300 dark:border-[#383838] bg-white dark:bg-[#141414] rounded-lg px-3 py-2 text-sm focus:border-[#FF0000] focus:ring-1 focus:ring-[#FF0000] outline-none font-semibold text-[#212121] dark:text-white"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-gray-600 dark:text-gray-300 uppercase">Ingresos Estimados ($ USD)</label>
+                    <label htmlFor="mini-revenue-input" className="text-xs font-bold text-gray-700 dark:text-gray-200 uppercase">Ingresos Estimados ($ USD)</label>
                     <input
+                      id="mini-revenue-input"
+                      aria-label="Ingresos Estimados en Dólares"
                       type="number"
                       value={miniRevenue}
                       onChange={(e) => setMiniRevenue(Math.max(0, Number(e.target.value) || 0))}
-                      className="w-full border border-gray-200 dark:border-[#383838] bg-white dark:bg-[#141414] rounded-lg px-3 py-2 text-sm focus:border-[#FF0000] focus:ring-1 focus:ring-[#FF0000] outline-none font-semibold text-[#212121] dark:text-white"
+                      className="w-full border border-gray-300 dark:border-[#383838] bg-white dark:bg-[#141414] rounded-lg px-3 py-2 text-sm focus:border-[#FF0000] focus:ring-1 focus:ring-[#FF0000] outline-none font-semibold text-[#212121] dark:text-white"
                     />
                   </div>
 

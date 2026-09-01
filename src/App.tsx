@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
@@ -6,20 +6,43 @@ import { SearchModal } from './components/SearchModal';
 import { CookieBanner } from './components/CookieBanner';
 import { SEOHead } from './components/SEOHead';
 import { HomePage } from './pages/HomePage';
-import { CalculatorsDirectory } from './pages/CalculatorsDirectory';
-import { GuidesPage } from './pages/GuidesPage';
-import { LegalPage } from './pages/LegalPages';
-import { ImagesPage } from './pages/ImagesPage';
-import { SeoPage } from './pages/SeoPage';
-import { CalculatorEngine } from './components/CalculatorEngine';
-import { AdminDashboard } from './components/AdminDashboard';
+import { ToolRegistry } from './services/toolRegistry';
 import { CALCULATORS } from './data/calculators';
 import { IMAGE_TOOLS } from './data/imageToolsData';
 import { SEO_TOOLS } from './data/seoToolsData';
 import { GUIDES } from './data/guides';
 
-import { NotFoundPage } from './pages/NotFoundPage';
-import { ToolRegistry } from './services/toolRegistry';
+// Lazy-loaded routes for code splitting and instant initial FCP/LCP
+const CalculatorsDirectory = React.lazy(() =>
+  import('./pages/CalculatorsDirectory').then((m) => ({ default: m.CalculatorsDirectory }))
+);
+const GuidesPage = React.lazy(() =>
+  import('./pages/GuidesPage').then((m) => ({ default: m.GuidesPage }))
+);
+const LegalPage = React.lazy(() =>
+  import('./pages/LegalPages').then((m) => ({ default: m.LegalPage }))
+);
+const ImagesPage = React.lazy(() =>
+  import('./pages/ImagesPage').then((m) => ({ default: m.ImagesPage }))
+);
+const SeoPage = React.lazy(() =>
+  import('./pages/SeoPage').then((m) => ({ default: m.SeoPage }))
+);
+const CalculatorEngine = React.lazy(() =>
+  import('./components/CalculatorEngine').then((m) => ({ default: m.CalculatorEngine }))
+);
+const AdminDashboard = React.lazy(() =>
+  import('./components/AdminDashboard').then((m) => ({ default: m.AdminDashboard }))
+);
+const NotFoundPage = React.lazy(() =>
+  import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage }))
+);
+
+const PageLoadingFallback = () => (
+  <div className="min-h-[50vh] flex items-center justify-center p-8">
+    <div className="w-8 h-8 border-3 border-red-500 border-t-transparent rounded-full animate-spin" />
+  </div>
+);
 
 function AppContent() {
   const [currentPath, setCurrentPath] = useState<string>(() => {
@@ -196,118 +219,120 @@ function AppContent() {
 
       {/* Main Dynamic View Routing */}
       <main className="flex-1">
-        {/* 1. Admin Dashboard */}
-        {currentPath === '/admin' ? (
-          <>
-            <SEOHead
-              title="Panel Administrativo"
-              description="Dashboard de métricas, telemetría y configuración del sistema YouTubeCalculador."
+        <Suspense fallback={<PageLoadingFallback />}>
+          {/* 1. Admin Dashboard */}
+          {currentPath === '/admin' ? (
+            <>
+              <SEOHead
+                title="Panel Administrativo"
+                description="Dashboard de métricas, telemetría y configuración del sistema YouTubeCalculador."
+              />
+              <AdminDashboard onExit={() => navigate('/')} />
+            </>
+          ) : !isKnownRoute ? (
+            /* 2. Custom 404 Page */
+            <NotFoundPage onNavigate={navigate} onOpenSearch={() => setIsSearchOpen(true)} />
+          ) : activeTool ? (
+            /* 3. Dynamic Calculator View */
+            <>
+              <SEOHead
+                title={activeTool.seo.title}
+                description={activeTool.seo.metaDescription}
+                route={`/${activeTool.slug}`}
+                faqs={activeTool.seo.faqs}
+                howToSteps={activeTool.seo.howToSteps}
+                toolName={activeTool.name}
+              />
+              <CalculatorEngine tool={activeTool} onNavigateTool={handleSelectTool} />
+            </>
+          ) : currentPath.startsWith('/imagenes') || activeImageTool ? (
+            /* 4. Image Assistant Suite (100% Local) */
+            <ImagesPage
+              currentPath={activeImageTool ? `/imagenes/${activeImageTool.slug}` : currentPath}
+              onNavigate={navigate}
             />
-            <AdminDashboard onExit={() => navigate('/')} />
-          </>
-        ) : !isKnownRoute ? (
-          /* 2. Custom 404 Page */
-          <NotFoundPage onNavigate={navigate} onOpenSearch={() => setIsSearchOpen(true)} />
-        ) : activeTool ? (
-          /* 3. Dynamic Calculator View */
-          <>
-            <SEOHead
-              title={activeTool.seo.title}
-              description={activeTool.seo.metaDescription}
-              route={`/${activeTool.slug}`}
-              faqs={activeTool.seo.faqs}
-              howToSteps={activeTool.seo.howToSteps}
-              toolName={activeTool.name}
+          ) : currentPath.startsWith('/seo') || activeSeoTool ? (
+            /* 5. YouTube SEO Suite (23 Local Text & Metadata Tools) */
+            <SeoPage
+              currentPath={activeSeoTool ? `/seo/${activeSeoTool.slug}` : currentPath}
+              onNavigate={navigate}
             />
-            <CalculatorEngine tool={activeTool} onNavigateTool={handleSelectTool} />
-          </>
-        ) : currentPath.startsWith('/imagenes') || activeImageTool ? (
-          /* 4. Image Assistant Suite (100% Local) */
-          <ImagesPage
-            currentPath={activeImageTool ? `/imagenes/${activeImageTool.slug}` : currentPath}
-            onNavigate={navigate}
-          />
-        ) : currentPath.startsWith('/seo') || activeSeoTool ? (
-          /* 5. YouTube SEO Suite (23 Local Text & Metadata Tools) */
-          <SeoPage
-            currentPath={activeSeoTool ? `/seo/${activeSeoTool.slug}` : currentPath}
-            onNavigate={navigate}
-          />
-        ) : currentPath === '/calculadoras' || currentPath === '/categorias' ? (
-          /* 6. Full Calculators Directory */
-          <>
-            <SEOHead
-              title="Todas las Calculadoras para YouTube (100% Gratuitas)"
-              description="Directorio con todas las herramientas de cálculo de ingresos, RPM, CPM, CTR, horas de reproducción y optimización técnica para creadores de YouTube."
-            />
-            <CalculatorsDirectory onNavigateTool={handleSelectTool} />
-          </>
-        ) : currentPath === '/guias' || activeGuide ? (
-          /* 7. Creator Strategy Guides */
-          <>
-            <SEOHead
-              title={activeGuide ? activeGuide.title : 'Guías y Estrategias para Creadores de YouTube'}
-              description={
-                activeGuide
-                  ? activeGuide.summary
-                  : 'Aprende a escalar tu canal de YouTube, aumentar tu RPM y diseñar miniaturas de alto impacto.'
-              }
-            />
-            <GuidesPage onNavigateTool={handleSelectTool} initialGuideSlug={activeGuide?.slug || null} />
-          </>
-        ) : currentPath === '/politica-privacidad' ? (
-          <>
-            <SEOHead
-              title="Política de Privacidad"
-              description="Política de privacidad y protección de datos anónima de YouTubeCalculador."
-            />
-            <LegalPage type="privacidad" />
-          </>
-        ) : currentPath === '/politica-cookies' ? (
-          <>
-            <SEOHead
-              title="Política de Cookies"
-              description="Información detallada sobre las cookies técnicas, de analítica y de Google AdSense utilizadas en YouTubeCalculador."
-            />
-            <LegalPage type="cookies" />
-          </>
-        ) : currentPath === '/terminos' ? (
-          <>
-            <SEOHead
-              title="Términos y Condiciones"
-              description="Términos de servicio y condiciones de uso de las calculadoras para YouTube."
-            />
-            <LegalPage type="terminos" />
-          </>
-        ) : currentPath === '/sobre-nosotros' ? (
-          <>
-            <SEOHead
-              title="Sobre Nosotros"
-              description="Conoce la misión de YouTubeCalculador: democratizar las herramientas analíticas para todos los creadores de YouTube."
-            />
-            <LegalPage type="sobre-nosotros" />
-          </>
-        ) : currentPath === '/contacto' ? (
-          <>
-            <SEOHead
-              title="Contacto y Sugerencias"
-              description="Envía tus preguntas o sugiere nuevas calculadoras para el equipo de YouTubeCalculador."
-            />
-            <LegalPage type="contacto" />
-          </>
-        ) : currentPath === '/' ? (
-          /* 8. Homepage */
-          <>
-            <SEOHead
-              title="Calculadoras y Herramientas Gratuitas para YouTube"
-              description="Calcula tus ingresos, RPM, CPM, CTR, horas de reproducción y optimiza tu canal de YouTube gratis y sin registro."
-            />
-            <HomePage onNavigateTool={handleSelectTool} onOpenSearch={() => setIsSearchOpen(true)} />
-          </>
-        ) : (
-          /* Fallback 404 */
-          <NotFoundPage onNavigate={navigate} onOpenSearch={() => setIsSearchOpen(true)} />
-        )}
+          ) : currentPath === '/calculadoras' || currentPath === '/categorias' ? (
+            /* 6. Full Calculators Directory */
+            <>
+              <SEOHead
+                title="Todas las Calculadoras para YouTube (100% Gratuitas)"
+                description="Directorio con todas las herramientas de cálculo de ingresos, RPM, CPM, CTR, horas de reproducción y optimización técnica para creadores de YouTube."
+              />
+              <CalculatorsDirectory onNavigateTool={handleSelectTool} />
+            </>
+          ) : currentPath === '/guias' || activeGuide ? (
+            /* 7. Creator Strategy Guides */
+            <>
+              <SEOHead
+                title={activeGuide ? activeGuide.title : 'Guías y Estrategias para Creadores de YouTube'}
+                description={
+                  activeGuide
+                    ? activeGuide.summary
+                    : 'Aprende a escalar tu canal de YouTube, aumentar tu RPM y diseñar miniaturas de alto impacto.'
+                }
+              />
+              <GuidesPage onNavigateTool={handleSelectTool} initialGuideSlug={activeGuide?.slug || null} />
+            </>
+          ) : currentPath === '/politica-privacidad' ? (
+            <>
+              <SEOHead
+                title="Política de Privacidad"
+                description="Política de privacidad y protección de datos anónima de YouTubeCalculador."
+              />
+              <LegalPage type="privacidad" />
+            </>
+          ) : currentPath === '/politica-cookies' ? (
+            <>
+              <SEOHead
+                title="Política de Cookies"
+                description="Información detallada sobre las cookies técnicas, de analítica y de Google AdSense utilizadas en YouTubeCalculador."
+              />
+              <LegalPage type="cookies" />
+            </>
+          ) : currentPath === '/terminos' ? (
+            <>
+              <SEOHead
+                title="Términos y Condiciones"
+                description="Términos de servicio y condiciones de uso de las calculadoras para YouTube."
+              />
+              <LegalPage type="terminos" />
+            </>
+          ) : currentPath === '/sobre-nosotros' ? (
+            <>
+              <SEOHead
+                title="Sobre Nosotros"
+                description="Conoce la misión de YouTubeCalculador: democratizar las herramientas analíticas para todos los creadores de YouTube."
+              />
+              <LegalPage type="sobre-nosotros" />
+            </>
+          ) : currentPath === '/contacto' ? (
+            <>
+              <SEOHead
+                title="Contacto y Sugerencias"
+                description="Envía tus preguntas o sugiere nuevas calculadoras para el equipo de YouTubeCalculador."
+              />
+              <LegalPage type="contacto" />
+            </>
+          ) : currentPath === '/' ? (
+            /* 8. Homepage */
+            <>
+              <SEOHead
+                title="Calculadoras y Herramientas Gratuitas para YouTube"
+                description="Calcula tus ingresos, RPM, CPM, CTR, horas de reproducción y optimiza tu canal de YouTube gratis y sin registro."
+              />
+              <HomePage onNavigateTool={handleSelectTool} onOpenSearch={() => setIsSearchOpen(true)} />
+            </>
+          ) : (
+            /* Fallback 404 */
+            <NotFoundPage onNavigate={navigate} onOpenSearch={() => setIsSearchOpen(true)} />
+          )}
+        </Suspense>
       </main>
 
       {/* Persistent Footer */}
