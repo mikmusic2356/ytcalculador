@@ -108,7 +108,7 @@ function AppContent() {
 
   // Resolve current active calculator if on a tool slug route
   const cleanCurrentPath = currentPath.split('?')[0].replace(/\/+$/, '') || '/';
-  const pathSegments = currentPath.replace(/^\//, '').split('/').filter(Boolean);
+  const pathSegments = cleanCurrentPath.replace(/^\//, '').split('/').filter(Boolean);
   const lastSegment = pathSegments[pathSegments.length - 1] || '';
   const firstSegment = pathSegments[0] || '';
 
@@ -179,7 +179,8 @@ function AppContent() {
     (firstSegment === 'seo' && SEO_TOOLS.find((t) => t.slug === lastSegment));
 
   // Resolve current guide if on a guide slug
-  const activeGuide = GUIDES.find((g) => g.slug === resolvedSlug || g.slug === firstSegment);
+  const activeGuide =
+    GUIDES.find((g) => g.slug === resolvedSlug || g.slug === lastSegment || g.slug === firstSegment);
 
   // Static/hub routes known
   const isKnownRoute =
@@ -187,8 +188,11 @@ function AppContent() {
     cleanCurrentPath === '/calculadoras' ||
     cleanCurrentPath === '/categorias' ||
     cleanCurrentPath === '/imagenes' ||
+    cleanCurrentPath.startsWith('/imagenes/') ||
     cleanCurrentPath === '/seo' ||
+    cleanCurrentPath.startsWith('/seo/') ||
     cleanCurrentPath === '/guias' ||
+    cleanCurrentPath.startsWith('/guias/') ||
     cleanCurrentPath === '/admin' ||
     cleanCurrentPath === '/politica-privacidad' ||
     cleanCurrentPath === '/politica-cookies' ||
@@ -221,7 +225,7 @@ function AppContent() {
       <main className="flex-1">
         <Suspense fallback={<PageLoadingFallback />}>
           {/* 1. Admin Dashboard */}
-          {currentPath === '/admin' ? (
+          {cleanCurrentPath === '/admin' ? (
             <>
               <SEOHead
                 title="Panel Administrativo"
@@ -229,11 +233,8 @@ function AppContent() {
               />
               <AdminDashboard onExit={() => navigate('/')} />
             </>
-          ) : !isKnownRoute ? (
-            /* 2. Custom 404 Page */
-            <NotFoundPage onNavigate={navigate} onOpenSearch={() => setIsSearchOpen(true)} />
           ) : activeTool ? (
-            /* 3. Dynamic Calculator View */
+            /* 2. Dynamic Calculator View */
             <>
               <SEOHead
                 title={activeTool.seo.title}
@@ -245,20 +246,20 @@ function AppContent() {
               />
               <CalculatorEngine tool={activeTool} onNavigateTool={handleSelectTool} />
             </>
-          ) : currentPath.startsWith('/imagenes') || activeImageTool ? (
-            /* 4. Image Assistant Suite (100% Local) */
+          ) : cleanCurrentPath.startsWith('/imagenes') || activeImageTool ? (
+            /* 3. Image Assistant Suite (100% Local) */
             <ImagesPage
-              currentPath={activeImageTool ? `/imagenes/${activeImageTool.slug}` : currentPath}
+              currentPath={activeImageTool ? `/imagenes/${activeImageTool.slug}` : cleanCurrentPath}
               onNavigate={navigate}
             />
-          ) : currentPath.startsWith('/seo') || activeSeoTool ? (
-            /* 5. YouTube SEO Suite (23 Local Text & Metadata Tools) */
+          ) : cleanCurrentPath.startsWith('/seo') || activeSeoTool ? (
+            /* 4. YouTube SEO Suite (23 Local Text & Metadata Tools) */
             <SeoPage
-              currentPath={activeSeoTool ? `/seo/${activeSeoTool.slug}` : currentPath}
+              currentPath={activeSeoTool ? `/seo/${activeSeoTool.slug}` : cleanCurrentPath}
               onNavigate={navigate}
             />
-          ) : currentPath === '/calculadoras' || currentPath === '/categorias' ? (
-            /* 6. Full Calculators Directory */
+          ) : cleanCurrentPath === '/calculadoras' || cleanCurrentPath === '/categorias' ? (
+            /* 5. Full Calculators Directory */
             <>
               <SEOHead
                 title="Todas las Calculadoras para YouTube (100% Gratuitas)"
@@ -266,8 +267,8 @@ function AppContent() {
               />
               <CalculatorsDirectory onNavigateTool={handleSelectTool} />
             </>
-          ) : currentPath === '/guias' || activeGuide || currentPath.startsWith('/guias/') ? (
-            /* 7. Creator Strategy Guides */
+          ) : cleanCurrentPath === '/guias' || activeGuide || cleanCurrentPath.startsWith('/guias/') ? (
+            /* 6. Creator Strategy Guides */
             <>
               <SEOHead
                 title={activeGuide ? `${activeGuide.title} - Guía para Creadores` : 'Guías y Estrategias para Creadores de YouTube'}
@@ -284,7 +285,7 @@ function AppContent() {
                 initialGuideSlug={activeGuide?.slug || null}
               />
             </>
-          ) : currentPath === '/politica-privacidad' ? (
+          ) : cleanCurrentPath === '/politica-privacidad' ? (
             <>
               <SEOHead
                 title="Política de Privacidad"
@@ -292,7 +293,7 @@ function AppContent() {
               />
               <LegalPage type="privacidad" />
             </>
-          ) : currentPath === '/politica-cookies' ? (
+          ) : cleanCurrentPath === '/politica-cookies' ? (
             <>
               <SEOHead
                 title="Política de Cookies"
@@ -300,7 +301,7 @@ function AppContent() {
               />
               <LegalPage type="cookies" />
             </>
-          ) : currentPath === '/terminos' ? (
+          ) : cleanCurrentPath === '/terminos' ? (
             <>
               <SEOHead
                 title="Términos y Condiciones"
@@ -308,7 +309,7 @@ function AppContent() {
               />
               <LegalPage type="terminos" />
             </>
-          ) : currentPath === '/sobre-nosotros' ? (
+          ) : cleanCurrentPath === '/sobre-nosotros' ? (
             <>
               <SEOHead
                 title="Sobre Nosotros"
@@ -316,7 +317,7 @@ function AppContent() {
               />
               <LegalPage type="sobre-nosotros" />
             </>
-          ) : currentPath === '/contacto' ? (
+          ) : cleanCurrentPath === '/contacto' ? (
             <>
               <SEOHead
                 title="Contacto y Sugerencias"
@@ -324,8 +325,8 @@ function AppContent() {
               />
               <LegalPage type="contacto" />
             </>
-          ) : currentPath === '/' ? (
-            /* 8. Homepage */
+          ) : cleanCurrentPath === '/' ? (
+            /* 7. Homepage */
             <>
               <SEOHead
                 title="Calculadoras y Herramientas Gratuitas para YouTube"
@@ -334,7 +335,7 @@ function AppContent() {
               <HomePage onNavigateTool={handleSelectTool} onOpenSearch={() => setIsSearchOpen(true)} />
             </>
           ) : (
-            /* Fallback 404 */
+            /* 8. Custom 404 Page (Fallback) */
             <NotFoundPage onNavigate={navigate} onOpenSearch={() => setIsSearchOpen(true)} />
           )}
         </Suspense>
