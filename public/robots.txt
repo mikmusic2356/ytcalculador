@@ -1,5 +1,5 @@
-# Robots.txt for YouTubeCalculador
-# https://youtubecalculador.online
+# Robots.txt for VideoCalculator
+# https://videocalculator.online
 
 User-agent: *
 Allow: /
@@ -7,4 +7,4 @@ Disallow: /admin
 Disallow: /api/
 
 # Sitemap Location
-Sitemap: https://youtubecalculador.online/sitemap.xml
+Sitemap: https://videocalculator.online/sitemap.xml

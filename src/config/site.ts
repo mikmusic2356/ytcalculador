@@ -1,13 +1,13 @@
 /**
- * Global Site Configuration for YouTubeCalculador
+ * Global Site Configuration for VideoCalculator
  * Handles environment-aware URL resolution for canonicals, Open Graph, sitemaps, and robots.txt.
  * 
  * In development: Uses http://localhost:3000 or current browser origin.
- * In production: Uses https://youtubecalculador.online.
+ * In production: Uses https://videocalculator.online.
  * No components should hardcode domain strings.
  */
 
-export const DEFAULT_PRODUCTION_URL = 'https://youtubecalculador.online';
+export const DEFAULT_PRODUCTION_URL = 'https://videocalculator.online';
 
 /**
  * Resolves the active base URL of the site depending on runtime environment.
