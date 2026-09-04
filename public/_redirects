@@ -1,4 +1,6 @@
 /robots.txt    /robots.txt    200
 /sitemap.xml   /sitemap.xml   200
 /ads.txt       /ads.txt       200
+/sw.js         /sw.js         200
 /*             /index.html    200
+
