@@ -12,24 +12,18 @@ import { IMAGE_TOOLS } from './data/imageToolsData';
 import { SEO_TOOLS } from './data/seoToolsData';
 import { GUIDES } from './data/guides';
 
-// Lazy-loaded routes for code splitting and instant initial FCP/LCP
-const CalculatorsDirectory = React.lazy(() =>
-  import('./pages/CalculatorsDirectory').then((m) => ({ default: m.CalculatorsDirectory }))
-);
+// Direct imports for key interactive paths for instant FCP and zero-delay rendering
+import { CalculatorEngine } from './components/CalculatorEngine';
+import { CalculatorsDirectory } from './pages/CalculatorsDirectory';
+import { SeoPage } from './pages/SeoPage';
+import { ImagesPage } from './pages/ImagesPage';
+
+// Lazy-load auxiliary administrative and static secondary routes
 const GuidesPage = React.lazy(() =>
   import('./pages/GuidesPage').then((m) => ({ default: m.GuidesPage }))
 );
 const LegalPage = React.lazy(() =>
   import('./pages/LegalPages').then((m) => ({ default: m.LegalPage }))
-);
-const ImagesPage = React.lazy(() =>
-  import('./pages/ImagesPage').then((m) => ({ default: m.ImagesPage }))
-);
-const SeoPage = React.lazy(() =>
-  import('./pages/SeoPage').then((m) => ({ default: m.SeoPage }))
-);
-const CalculatorEngine = React.lazy(() =>
-  import('./components/CalculatorEngine').then((m) => ({ default: m.CalculatorEngine }))
 );
 const AdminDashboard = React.lazy(() =>
   import('./components/AdminDashboard').then((m) => ({ default: m.AdminDashboard }))
