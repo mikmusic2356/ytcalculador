@@ -317,6 +317,79 @@ export const SeoToolLayout: React.FC<SeoToolLayoutProps> = ({
           </section>
         )}
 
+        {/* 5-Paragraph Comprehensive Blog for SEO Tools */}
+        <section className="bg-white dark:bg-[#1A1A1A] rounded-2xl border border-gray-200 dark:border-[#2E2E2E] p-6 sm:p-8 space-y-6 text-[#212121] dark:text-gray-200 shadow-xs">
+          <div className="border-b border-gray-100 dark:border-[#2A2A2A] pb-4">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-50 dark:bg-red-950/50 text-[#FF0000] dark:text-[#FF4E45] text-xs font-bold rounded-md mb-2">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Análisis Metodológico y Guía Editorial</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-[#212121] dark:text-white tracking-tight">
+              Guía técnica y estratégica: {tool.name}
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+              Descubre los fundamentos algorítmicos, el origen en los motores de búsqueda, el método de procesamiento y las mejores prácticas.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+            {/* Párrafo 1 */}
+            <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#141414] border border-gray-200/80 dark:border-[#2F2F2F] space-y-1.5">
+              <h3 className="text-sm sm:text-base font-bold text-[#212121] dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 flex items-center justify-center text-xs font-black">1</span>
+                ¿Qué es y cuál es el concepto de {tool.name}?
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
+                <strong>{tool.name}</strong> es una herramienta de procesamiento de lenguaje natural (PLN) y optimización de metadatos creada para creadores de contenido de YouTube. Su función primordial es estructurar, analizar y perfeccionar la información textual que acompaña a tus videos (como títulos, descripciones, etiquetas y capítulos temporales) para que los sistemas de indexación de Google y YouTube interpreten con máxima fidelidad la temática, el valor y el público objetivo de cada publicación.
+              </p>
+            </div>
+
+            {/* Párrafo 2 */}
+            <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#141414] border border-gray-200/80 dark:border-[#2F2F2F] space-y-1.5">
+              <h3 className="text-sm sm:text-base font-bold text-[#212121] dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-black">2</span>
+                Origen y evolución: ¿De dónde surge el SEO para video en YouTube?
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
+                Desde la creación de YouTube en 2005 y su compra por Google, la plataforma se convirtió en el segundo motor de búsqueda más utilizado del planeta. Históricamente, los sistemas de recomendación dependían exclusivamente de palabras clave en etiquetas y títulos. Con el desarrollo de redes neuronales profundas (Deep Neural Networks) y modelos semánticos en 2016, YouTube empezó a priorizar la concordancia de intención de búsqueda, la naturalidad sintáctica y la coherencia semántica entre el título, la miniatura y la descripción.
+              </p>
+            </div>
+
+            {/* Párrafo 3 */}
+            <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#141414] border border-gray-200/80 dark:border-[#2F2F2F] space-y-1.5">
+              <h3 className="text-sm sm:text-base font-bold text-[#212121] dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xs font-black">3</span>
+                ¿Cómo procesa y calcula los resultados esta herramienta?
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
+                La herramienta opera ejecutando algoritmos de segmentación textual, conteo de caracteres con límites de truncamiento en dispositivos móviles (como el límite de 60-70 caracteres en títulos visibles o los 5000 caracteres de descripciones), extracción de palabras clave long-tail y limpieza de caracteres inválidos. Todo el análisis se realiza de forma local en tu navegador con latencia cero, asegurando que tus datos y estrategias de contenido se mantengan privados.
+              </p>
+            </div>
+
+            {/* Párrafo 4 */}
+            <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#141414] border border-gray-200/80 dark:border-[#2F2F2F] space-y-1.5">
+              <h3 className="text-sm sm:text-base font-bold text-[#212121] dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-black">4</span>
+                ¿Para qué sirve y cómo impacta en el crecimiento de tu canal?
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
+                Implementar esta herramienta te permite evitar errores críticos como el *"keyword stuffing"* (relleno forzado de palabras clave) que puede ser penalizado por las políticas de spam de YouTube. Además, optimiza la legibilidad en pantallas de smartphones (donde se genera más del 70% del consumo), mejora la tasa de clics (CTR) orgánica y permite que tus videos antiguos sigan recibiendo tráfico continuo mediante búsquedas sugeridas a lo largo de los meses.
+              </p>
+            </div>
+
+            {/* Párrafo 5 */}
+            <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#141414] border border-gray-200/80 dark:border-[#2F2F2F] space-y-1.5">
+              <h3 className="text-sm sm:text-base font-bold text-[#212121] dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xs font-black">5</span>
+                Casos de uso prácticos y aplicaciones reales
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
+                <strong>Caso 1: Lanzamiento de nuevo video:</strong> Un creador redacta 3 variaciones de título y utiliza la herramienta para verificar que la palabra clave principal no quede cortada por puntos suspensivos en móviles. <strong>Caso 2: Auditoría de catálogo:</strong> Un canal educativo revisa sus videos con bajo rendimiento para reorganizar las descripciones agregando marcas de tiempo (capítulos) y enlaces limpios, reactivando las visitas en YouTube Search y Google Video Search.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* 9. Related Tools Carousel / Grid */}
         {relatedTools.length > 0 && (
           <section className="space-y-4 pt-4">

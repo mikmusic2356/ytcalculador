@@ -3,6 +3,7 @@ import { Sparkles, CheckCircle2 } from 'lucide-react';
 import { CalculatorConfig } from '../../types';
 import { CurrencyCode } from '../../utils/currency';
 import { CurrencySelector } from './CurrencySelector';
+import { ToolBlogSection } from './ToolBlogSection';
 import { AdPlacement } from '../AdPlacement';
 
 import { Breadcrumbs } from '../Breadcrumbs';
@@ -130,6 +131,9 @@ export const CalculatorLayout: React.FC<CalculatorLayoutProps> = ({
           </div>
         )}
       </div>
+
+      {/* 5-Paragraph Comprehensive Editorial Blog */}
+      <ToolBlogSection tool={tool} />
     </div>
   );
 };

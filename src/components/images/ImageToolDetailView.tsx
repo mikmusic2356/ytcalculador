@@ -300,6 +300,79 @@ export const ImageToolDetailView: React.FC<ImageToolDetailViewProps> = ({
           </div>
         )}
 
+        {/* 5-Paragraph Comprehensive Blog for Image Tools */}
+        <section className="bg-white dark:bg-[#1E1E1E] rounded-2xl border border-gray-200 dark:border-[#2E2E2E] p-6 sm:p-8 space-y-6 text-[#212121] dark:text-gray-200 shadow-xs">
+          <div className="border-b border-gray-100 dark:border-[#2F2F2F] pb-4">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-50 dark:bg-red-950/50 text-[#FF0000] dark:text-[#FF4E45] text-xs font-bold rounded-md mb-2">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Análisis Metodológico y Guía Técnica</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-[#212121] dark:text-white tracking-tight">
+              Guía técnica y de rendimiento: {tool.name}
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+              Aspectos clave sobre renderizado gráfico, estándares de compresión en YouTube y optimización de miniaturas.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+            {/* Párrafo 1 */}
+            <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#141414] border border-gray-200/80 dark:border-[#2F2F2F] space-y-1.5">
+              <h3 className="text-sm sm:text-base font-bold text-[#212121] dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 flex items-center justify-center text-xs font-black">1</span>
+                ¿Qué es y en qué consiste {tool.name}?
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
+                <strong>{tool.name}</strong> es una herramienta de procesamiento de imágenes orientada al estándar visual de YouTube y plataformas de video digital. Permite a creadores y diseñadores convertir, optimizar y redimensionar archivos gráficos (como miniaturas de 1280x720, avatares de canal de 800x800 o banners panorámicos) asegurando una relación de aspecto perfecta y pesos de archivo inferiores al límite de subida de 2 MB de YouTube.
+              </p>
+            </div>
+
+            {/* Párrafo 2 */}
+            <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#141414] border border-gray-200/80 dark:border-[#2F2F2F] space-y-1.5">
+              <h3 className="text-sm sm:text-base font-bold text-[#212121] dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-black">2</span>
+                Origen y estándares de compresión gráfica en la web
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
+                Con el nacimiento de la web moderna y la llegada de pantallas de alta densidad de píxeles (Retina y OLED), los formatos gráficos tradicionales como JPEG evolucionaron hacia tecnologías más eficientes como WebP y AVIF. YouTube impone límites estrictos de compresión para evitar que millones de miniaturas ralenticen la carga de su aplicación móvil, lo que exige herramientas de procesamiento capaces de reducir el tamaño en kilobytes sin introducir artefactos visuales ni banding en degradados.
+              </p>
+            </div>
+
+            {/* Párrafo 3 */}
+            <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#141414] border border-gray-200/80 dark:border-[#2F2F2F] space-y-1.5">
+              <h3 className="text-sm sm:text-base font-bold text-[#212121] dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xs font-black">3</span>
+                ¿Cómo procesa y transforma las imágenes esta herramienta?
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
+                El motor de procesamiento utiliza la API nativa de HTML5 Canvas y WebAssembly ejecutándose directamente en el procesador de tu dispositivo. Esto significa que la imagen nunca se sube a servidores externos: los píxeles son muestreados, filtrados y re-codificados con algoritmos bicúbicos de alta calidad a velocidad instantánea, preservando al 100% tu privacidad y derechos de autor.
+              </p>
+            </div>
+
+            {/* Párrafo 4 */}
+            <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#141414] border border-gray-200/80 dark:border-[#2F2F2F] space-y-1.5">
+              <h3 className="text-sm sm:text-base font-bold text-[#212121] dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-black">4</span>
+                ¿Para qué sirve y por qué es crucial para el CTR de tu canal?
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
+                Una imagen optimizada correctamente previene que YouTube rechace tu archivo por superar los 2 MB o que aplique su propio algoritmo de compresión agresivo que arruine la nitidez del texto. Además, miniaturas con la proporción exacta de 16:9 evitan bandas negras laterales en los feeds móviles, garantizando que el diseño capture la atención del usuario e impulse tu tasa de clics (CTR).
+              </p>
+            </div>
+
+            {/* Párrafo 5 */}
+            <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#141414] border border-gray-200/80 dark:border-[#2F2F2F] space-y-1.5">
+              <h3 className="text-sm sm:text-base font-bold text-[#212121] dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xs font-black">5</span>
+                Casos de uso prácticos y ejemplos reales
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
+                <strong>Caso 1: Miniatura pesada de Photoshop:</strong> Un diseñador exporta una miniatura en PNG de 4.8 MB que YouTube no le permite subir; con esta herramienta la optimiza a 1.2 MB en formato JPG manteniendo la nitidez perfecta. <strong>Caso 2: Adaptación de banner multiescritorio:</strong> Un creador ajusta el encabezado de su canal para que la "zona segura" de texto quede perfectamente centrada en televisores, ordenadores y smartphones sin recortarse.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Espacio Publicitario 4: Inferior antes de Herramientas Relacionadas */}
         <AdPlacement slotId={`img-tool-bottom-${tool.id}`} format="horizontal-banner" />
 
